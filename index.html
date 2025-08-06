@@ -2,37 +2,174 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>微信一键连WiFi</title>
-  <meta name="viewport" content="width=device-width">
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>微信扫码一键连WiFi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // 移动端兼容解决方案
+    function connectWifi() {
+      // 方案1：尝试直接打开WiFi协议
+      try {
+        window.location.href = "WIFI:S:C358;T:WPA;P:zs18780712730;;";
+      } catch(e) {
+        // 方案2：创建隐藏链接点击（兼容iOS）
+        const link = document.createElement('a');
+        link.href = "WIFI:S:C358;T:WPA;P:zs18780712730;;";
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        
+        // 方案3：微信特殊处理
+        setTimeout(function() {
+          if (navigator.userAgent.match(/MicroMessenger/i)) {
+            alert("请在浏览器中打开此页面\n或点击右上角选择'在浏览器打开'");
+          } else if (navigator.userAgent.match(/Android/i)) {
+            alert("请手动选择WiFi：你的WiFi名称\n密码已自动复制到剪贴板");
+            copyToClipboard("你的密码");
+          }
+        }, 500);
+      }
+    }
+    
+    // 复制密码到剪贴板（安卓备用方案）
+    function copyToClipboard(text) {
+      const input = document.createElement('textarea');
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+    
+    // 页面加载时检查设备类型
+    window.onload = function() {
+      if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+        document.getElementById('ios-tip').style.display = 'block';
+      } else if (navigator.userAgent.match(/Android/i)) {
+        document.getElementById('android-tip').style.display = 'block';
+      }
+    }
+  </script>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, system-ui, sans-serif;
+      background: linear-gradient(135deg, #f0f5ff 0%, #e6f7ff 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 450px;
+      overflow: hidden;
+    }
+    .header {
+      background: #1e88e5;
+      color: white;
+      padding: 30px 20px;
       text-align: center;
-      padding: 20%;
-      background: #f0f5ff;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+    .content {
+      padding: 30px;
+      text-align: center;
     }
     .btn {
       display: inline-block;
       background: #1e88e5;
       color: white;
-      padding: 15px 30px;
+      padding: 16px 40px;
       border-radius: 30px;
       text-decoration: none;
-      font-size: 1.2em;
-      margin: 20px;
-      box-shadow: 0 5px 15px rgba(30,136,229,0.4);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 25px 0;
+      box-shadow: 0 6px 18px rgba(30, 136, 229, 0.4);
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      max-width: 300px;
+    }
+    .tips {
+      background: #fff8e1;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 20px 0;
+      text-align: left;
+      display: none; /* 默认隐藏 */
+    }
+    .tip-title {
+      color: #ff8f00;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .footer {
+      color: #78909c;
+      font-size: 0.9rem;
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #f0f4f8;
     }
   </style>
 </head>
 <body>
-  <h2>家庭WiFi一键连接</h2>
-  <!-- ↓ 修改这里 ↓ -->
-  <a class="btn" href="WIFI:S:C358;T:WPA;P:zs18780712730;;">
-    立即加入网络
-  </a>
-  <p>微信扫码 → 点蓝色按钮 → 点"加入"</p>
+  <div class="card">
+    <div class="header">
+      <h1>微信扫码一键连网</h1>
+      <p>点击下方按钮连接WiFi</p>
+    </div>
+    
+    <div class="content">
+      <!-- iOS设备提示 -->
+      <div class="tips" id="ios-tip">
+        <div class="tip-title">iPhone/iPad用户请注意：</div>
+        <p>1. 点击按钮后如果弹出"加入网络"</p>
+        <p>2. 点击"加入"即可完成连接</p>
+        <p>3. 如无反应，请用Safari浏览器打开此页</p>
+      </div>
+      
+      <!-- 安卓设备提示 -->
+      <div class="tips" id="android-tip">
+        <div class="tip-title">安卓用户请注意：</div>
+        <p>1. 点击按钮后选择"打开链接"</p>
+        <p>2. 在弹出的WiFi连接中点击"连接"</p>
+        <p>3. 部分手机需手动选择网络</p>
+      </div>
+      
+      <!-- 连接按钮 -->
+      <button class="btn" onclick="connectWifi()">
+        立即加入网络
+      </button>
+      
+      <p style="color:#546e7a; margin-top:15px">
+        网络名称：<strong>你的WiFi名称</strong>
+      </p>
+      
+      <!-- 手动连接说明 -->
+      <div style="margin-top: 30px; padding: 15px; background: #f9f9f9; border-radius: 10px;">
+        <h3>备用连接方法</h3>
+        <p>如自动连接失败，请手动操作：</p>
+        <p>1. 打开手机设置 → WiFi</p>
+        <p>2. 选择网络：<strong>你的WiFi名称</strong></p>
+        <p>3. 输入密码：<strong>你的密码</strong></p>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>技术支持电话：您的手机号</p>
+    </div>
+  </div>
 </body>
-
 </html>
-
-
