@@ -13,11 +13,11 @@
     function connectWifi() {
       // 方案1：尝试直接打开WiFi协议
       try {
-        window.location.href = "WIFI:S:C358;T:WPA;P:zs18780712730;;";
+        window.location.href = "WIFI:S:what;T:WPA;P:pass;;";
       } catch(e) {
         // 方案2：创建隐藏链接点击（兼容iOS）
         const link = document.createElement('a');
-        link.href = "WIFI:S:C358;T:WPA;P:zs18780712730;;";
+        link.href = "WIFI:S:what;T:WPA;P:pass;;";
         link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
@@ -173,3 +173,4 @@
   </div>
 </body>
 </html>
+
